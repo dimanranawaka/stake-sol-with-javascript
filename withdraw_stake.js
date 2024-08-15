@@ -63,6 +63,24 @@ const main = async () => {
     console.log(`Stake Account deactivated  : ${deactivateTxId}`);
     console.log(`Stake Account Status : ${stakeStatus.state}`);
 
+    const withdrawTx = StakeProgram.withdraw({
+        stakePubkey: stakeAccount.publicKey,
+        authorizedPubkey: wallet.publicKey,
+        toPubkey: wallet.publicKey,
+        lamports: stakeBalance,
+    });
+
+    const withdrawTxId = await sendAndConfirmTransaction(
+        connection,
+        withdrawTx,
+        [wallet]
+    );
+
+    console.log(`Stake Account withdrawed sucessfully. Tx Id : ${withdrawTxId}`);
+
+    stakeBalance = await connection.getBalance(stakeAccount.publicKey);
+    console.log(`Stake account balance : ${stakeBalance / LAMPORTS_PER_SOL} SOL`);
+
 }
 
 const runMain = async () => {
